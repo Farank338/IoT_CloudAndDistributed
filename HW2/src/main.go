@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -49,13 +50,13 @@ func main() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Server started")
+
 	n := Number{}
 	err := json.NewDecoder(r.Body).Decode(&n)
 	if err != nil {
 		panic(err)
 	}
-
+	fmt.Println("accept request with number: " + strconv.Itoa(n.Number))
 	res := []Number{}
 	db := DB.Where("number IN ?", []int{n.Number, n.Number + 1}).Find(&res)
 	if db.Error != nil {
@@ -95,9 +96,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if db.Error != nil {
 			panic(err)
 		}
-		n.Number = n.Number + 1
+		niceResp := make(map[string]interface{})
+		niceResp["number"] = n.Number + 1
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(&n)
+		json.NewEncoder(w).Encode(&niceResp)
 		return
 	}
 
