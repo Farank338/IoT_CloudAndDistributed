@@ -1,7 +1,7 @@
 #!/bin/sh
 #/etc/init.d/postgresql start &&\
 
-pg_ctl listen_addresses '*' &&\
+#pg_ctl listen_addresses '*' &&\
 service postgresql start &&\
 rm -R IoT_CloudAndDistributed &&\
 git clone https://github.com/Farank338/IoT_CloudAndDistributed.git &&\

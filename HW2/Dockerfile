@@ -13,7 +13,9 @@ RUN apt -y install postgresql-common
 RUN apt-get install systemd -y ;
 RUN sudo service postgresql start &&\
 echo "CREATE USER sem WITH PASSWORD 'sem';" | sudo -u postgres -i psql &&\
-echo "CREATE DATABASE sem;" | sudo -u postgres -i psql
+echo "CREATE DATABASE sem;" | sudo -u postgres -i psql &&\
+echo "ALTER SYSTEM SET listen_addresses = '*';" | sudo -u postgres -i psql
+
 
 
 RUN apt install git -y 
