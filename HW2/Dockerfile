@@ -7,7 +7,13 @@ apt update &&\
 apt upgrade -y 
 
 RUN apt -y install postgresql &&\
-/etc/init.d/postgresql start 
+/etc/init.d/postgresql start &&\
+su - postgres &&\
+psql -h localhost -p 5432; &&\
+CREATE USER sem WITH PASSWORD 'sem'; &&\
+CREATE DATABASE sem; &&\
+\q; &&\
+exit;
 
 RUN apt install git -y 
 RUN git clone https://github.com/Farank338/IoT_CloudAndDistributed.git

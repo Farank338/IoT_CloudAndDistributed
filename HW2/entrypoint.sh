@@ -5,7 +5,4 @@ git clone https://github.com/Farank338/IoT_CloudAndDistributed.git &&\
 cd IoT_CloudAndDistributed &&\
 cd HW2 &&\
 cd src &&\
-su - postgres
-psql -h localhost --command "CREATE USER sem WITH PASSWORD 'sem';" &&\
-psql -h localhost --command "CREATE DATABASE sem;" &&\
-exit 
+./hw2
