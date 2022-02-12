@@ -6,14 +6,15 @@ RUN apt-get update &&\
 apt update &&\
 apt upgrade -y 
 
-RUN apt -y install postgresql &&\
-/etc/init.d/postgresql start &&\
-su - postgres &&\
-psql -h localhost -p 5432; &&\
-CREATE USER sem WITH PASSWORD 'sem'; &&\
-CREATE DATABASE sem; &&\
-\q; &&\
-exit;
+RUN apt-get install sudo -y
+RUN apt -y install postgresql postgresql-contrib 
+RUN apt -y install postgresql-common
+
+RUN apt-get install systemd -y ;
+RUN sudo service postgresql start &&\
+echo "CREATE USER sem WITH PASSWORD 'sem';" | sudo -u postgres -i psql &&\
+echo "CREATE DATABASE sem;" | sudo -u postgres -i psql
+
 
 RUN apt install git -y 
 RUN git clone https://github.com/Farank338/IoT_CloudAndDistributed.git
