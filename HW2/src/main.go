@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -23,9 +24,13 @@ type Response struct {
 var DB *gorm.DB
 
 func main() {
+	userDBName := os.Getenv("USER_DB_NAME")
+	userDBPassword := os.Getenv("USER_DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+	dbHost := os.Getenv("DB_HOST")
 	var err error
 	DB, err = gorm.Open(postgres.New(postgres.Config{
-		DSN:                  "host=localhost user=sem password=sem dbname=sem port=5432 TimeZone=Europe/Moscow",
+		DSN:                  "host=" + dbHost + " user=" + userDBName + " password=" + userDBPassword + " dbname=" + dbName + " port=5432 TimeZone=Europe/Moscow",
 		PreferSimpleProtocol: true,
 	}), &gorm.Config{})
 	if err != nil {
@@ -98,5 +103,4 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(&resp)
 
-	//fmt.Fprintf(w, "URL.Path = %q\n", r.URL.Path)
 }
