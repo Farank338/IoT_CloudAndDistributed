@@ -95,10 +95,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if db.Error != nil {
 			panic(err)
 		}
-
-		resp.Code = 200
-		resp.Message = "Ok"
+		n.Number = n.Number + 1
 		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(&n)
+		return
 	}
 
 	json.NewEncoder(w).Encode(&resp)
