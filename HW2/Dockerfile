@@ -22,13 +22,9 @@ apt update
 RUN apt -y install postgresql &&\
 /etc/init.d/postgresql start 
 
-
-
-USER root
-RUN apt install git -y &&\
-git clone https://github.com/Farank338/IoT_CloudAndDistributed.git &&\
-
-
-
-ENTRYPOINT ["/home/student/IoT_CloudAndDistributed/HW2/entrypoint.sh"]
+RUN apt install git -y 
+RUN git clone https://github.com/Farank338/IoT_CloudAndDistributed.git 
+EXPOSE 5000
+RUN chmod +x IoT_CloudAndDistributed/HW2/entrypoint.sh
+ENTRYPOINT ["IoT_CloudAndDistributed/HW2/entrypoint.sh"]
 CMD ["run"]

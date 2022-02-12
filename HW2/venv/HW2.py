@@ -1,10 +1,30 @@
 import flask
 from peewee import *
 import json
+import os
 
-user = 'sem'
-password = 'sem'
-db_name = 'hw2'
+
+user = os.environ.get('USER_DB_NAME')
+password = os.environ.get('USER_DB_PASSWORD')
+db_name = os.environ.get('DB_NAME')
+host = os.environ.get('DB_HOST')
+
+if user==None:
+    print('user')
+    exit(1)
+
+if password==None:
+    print('password')
+    exit(1)
+
+if db_name==None:
+    print('db_name')
+    exit(1)
+
+if host==None:
+    print('host')
+    exit(1)
+
 
 dbhandle = PostgresqlDatabase(
     db_name, user=user,
@@ -32,11 +52,12 @@ if __name__ == '__main__':
         print(str(px))
         
 app = flask.Flask(__name__)
+app.run(host='0.0.0.0')
 
 @app.route("/number",methods = ['POST'])
 def addnumber():
-    data=flask.request.data
-    js = json.loads(data)
+    #data=flask.request.data
+    js =  flask.request.json
     data_number=js['number']
     data_number_less=data_number-1
     res=iot_cloud2.select().where(
