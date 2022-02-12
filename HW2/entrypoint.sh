@@ -9,4 +9,3 @@ su - postgres
 psql --command "CREATE USER sem WITH PASSWORD 'sem';" &&\
 psql --command "CREATE DATABASE sem;" &&\
 exit 
-#./hw2
