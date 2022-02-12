@@ -15,7 +15,7 @@ EXPOSE 8080
 ENV USER_DB_NAME=sem 
 ENV USER_DB_PASSWORD=sem 
 ENV DB_NAME=sem 
-ENV DB_HOST=sem 
+ENV DB_HOST=127.0.0.1 
 RUN chmod +x IoT_CloudAndDistributed/HW2/entrypoint.sh
 ENTRYPOINT ["IoT_CloudAndDistributed/HW2/entrypoint.sh"]
 CMD ["run"]
