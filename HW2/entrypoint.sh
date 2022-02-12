@@ -6,6 +6,6 @@ cd IoT_CloudAndDistributed &&\
 cd HW2 &&\
 cd src &&\
 su - postgres
-psql --command "CREATE USER sem WITH PASSWORD 'sem';" &&\
-psql --command "CREATE DATABASE sem;" &&\
+psql -h localhost --command "CREATE USER sem WITH PASSWORD 'sem';" &&\
+psql -h localhost --command "CREATE DATABASE sem;" &&\
 exit 
