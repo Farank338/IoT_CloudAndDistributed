@@ -14,4 +14,4 @@ export DB_HOST=sem &&\
 export LC_ALL=C.UTF-8  &&\
 export LANG=C.UTF-8 &&\
 export FLASK_APP=HW2.py &&\
-flask run &
+flask run --host=0.0.0.0 &
