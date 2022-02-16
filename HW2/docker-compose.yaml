@@ -1,0 +1,43 @@
+version: '2.1'
+
+services:
+  web:
+    build: .
+    
+    ports:
+      - '8080:8080' 
+    links:
+      - postgresql
+    networks:
+      - mynet
+    
+    depends_on:
+      postgresql:
+        condition: service_healthy     
+  postgresql:
+    image: postgres
+    ports:
+      - '5432:5432' 
+    restart: always    
+    networks:
+      - mynet    
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
+    environment:
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_USER=docker
+      - POSTGRES_DB=docker
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  mynet:
+    driver: bridge
+  
+
+volumes:
+  postgresql_data:
+    driver: local

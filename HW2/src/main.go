@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
+	
 	"strconv"
-
+	
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -25,15 +25,18 @@ type Response struct {
 var DB *gorm.DB
 
 func main() {
-	userDBName := os.Getenv("USER_DB_NAME")
+	/*userDBName := os.Getenv("USER_DB_NAME")
 	userDBPassword := os.Getenv("USER_DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
-	dbHost := os.Getenv("DB_HOST")
+	dbHostIp := os.Getenv("DB_HOST_IP")	*/
+	
+	dsn := "host=postgresql user=docker password=docker dbname=docker port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	
 	var err error
-	DB, err = gorm.Open(postgres.New(postgres.Config{
-		DSN:                  "host=" + dbHost + " user=" + userDBName + " password=" + userDBPassword + " dbname=" + dbName + " port=5432 TimeZone=Europe/Moscow",
-		PreferSimpleProtocol: true,
-	}), &gorm.Config{})
+    DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	
+	
+	
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,7 +49,7 @@ func main() {
 	http.HandleFunc("/number", handler)
 
 	fmt.Println("Server started")
-	log.Fatal(http.ListenAndServe("0.0.0.0:8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
