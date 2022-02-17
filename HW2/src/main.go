@@ -5,9 +5,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	"strconv"
-	
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -24,21 +28,51 @@ type Response struct {
 
 var DB *gorm.DB
 
+func Finishing() {
+	fmt.Println("Finishing")
+}
+
 func main() {
-	/*userDBName := os.Getenv("USER_DB_NAME")
-	userDBPassword := os.Getenv("USER_DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
-	dbHostIp := os.Getenv("DB_HOST_IP")	*/
-	
-	dsn := "host=postgresql user=docker password=docker dbname=docker port=5432 sslmode=disable TimeZone=Asia/Shanghai"
-	
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(c, os.Interrupt, syscall.SIGKILL)
+	signal.Notify(c, os.Interrupt, syscall.SIGSTOP)
+	signal.Notify(c, os.Interrupt, syscall.SIGHUP)
+	signal.Notify(c, os.Interrupt, syscall.SIGINT)
+	go func() {
+		<-c
+		Finishing()
+		os.Exit(1)
+	}()
+
+	fmt.Println(os.Environ())
+
+	host := os.Getenv("DB_HOST_IP")
+	port := os.Getenv("DB_HOST_PORT")
 	var err error
-    DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	
-	
-	
+	portI, err := strconv.Atoi(port)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	user := os.Getenv("USER_DB_NAME")
+	password := os.Getenv("USER_DB_PASSWORD")
+	db := os.Getenv("DB_NAME")
+	timezone := os.Getenv("DB_TIMEZONE")
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=%s",
+		host, user,
+		password, db,
+		portI, timezone)
+
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+	if err != nil {
+		for i := 0; i < 5; i++ {
+			time.Sleep(5 * time.Second)
+			DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		}
+		log.Println(err)
 	}
 
 	err = DB.AutoMigrate(&Number{})

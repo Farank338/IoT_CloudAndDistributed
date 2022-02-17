@@ -23,7 +23,7 @@ EXPOSE 8080
 
 #Слдущая строка нужна чтобы репозиторий кклонировался всегда при docker build даже если ранее данный шаг был закеширован
 #ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
-COPY init.sql /docker-entrypoint-initdb.d/
+#COPY init.sql /docker-entrypoint-initdb.d/
 #Клоним свой репозиторий
 COPY src src
 COPY entrypoint.sh .
@@ -33,12 +33,11 @@ RUN cd src &&\
 RUN cd src &&\
  go build 
 
+
+
 #Делаем скрипт исполняемым
 RUN chmod +x entrypoint.sh
-ENV USER_DB_NAME=docker 
-ENV USER_DB_PASSWORD=docker 
-ENV DB_NAME=docker
-ENV DB_HOST_IP=postgresql
+
 #Задаём точку и условия входа
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["run"]

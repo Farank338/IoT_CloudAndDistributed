@@ -1,43 +1,29 @@
-version: '2.1'
+version: '3'
 
 services:
   web:
     build: .
-    
-    ports:
-      - '8080:8080' 
-    links:
-      - postgresql
-    networks:
-      - mynet
-    
-    depends_on:
-      postgresql:
-        condition: service_healthy     
-  postgresql:
-    image: postgres
-    ports:
-      - '5432:5432' 
-    restart: always    
-    networks:
-      - mynet    
-    volumes:
-      - 'postgresql_data:/bitnami/postgresql'
-    environment:
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_USER=docker
-      - POSTGRES_DB=docker
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    image: farank338/iot_cnd_hw2
 
-networks:
-  mynet:
-    driver: bridge
+    ports:
+      - '8080:8080'    
+    environment:      
+      DB_HOST_IP: database
+      DB_HOST_PORT: 5432
+      USER_DB_NAME: username
+      USER_DB_PASSWORD: password
+      DB_NAME: default_database
+      DB_TIMEZONE: Europe/Moscow
+ 
+  database:
+   
+    image: 'postgres:latest'
   
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: username # The PostgreSQL user (useful to connect to the database)
+      POSTGRES_PASSWORD: password # The PostgreSQL password (useful to connect to the database)
+      POSTGRES_DB: default_database # The PostgreSQL default database (automatically created at first launch)
 
-volumes:
-  postgresql_data:
-    driver: local
+   

@@ -1,0 +1,20 @@
+---
+ apiVersion: v1
+ kind: Pod
+ metadata:
+   name: beschastnovsa_iot_cnd_hw2
+   labels:
+     app: back_end
+ spec:
+   containers:
+     - name: back_end
+       image: farank338/iot_cnd_hw2
+       ports:
+         - containerPort: 8080
+     - name: database
+       image: postgres:latest
+
+#kubectl create -f pod.yaml
+#kubectl get pods
+#kubectl delete pod beschastnovsa_iot_cnd_hw2-site
+#kubectl describe pod beschastnovsa_iot_cnd_hw2-site
