@@ -1,32 +1,44 @@
 ---
 apiVersion: apps/v1
- kind: Deployment
- metadata:
-   name: beschastnovsa_iot_cnd_hw2-site
- spec:
-   replicas: 2
-
-#---
-#apiVersion: apps/v1
-#kind: Deployment
-#metadata:
-#  name: beschastnovsa_iot_cnd_hw2
-#  labels:
-#    app: back_end
-#spec:
-#  replicas: 2
-#  selector:
-#    matchLabels:
-#      app: back_end
-#  template:
-#    metadata:
-#      labels:
-#        app: back_end
-#    spec:
-#      containers:
-#        - name: back_end
-#          image: farank338/iot_cnd_hw2
-#          ports:
-#            - containerPort: 8080
- #       - name: database
- #         image: postgres:latest
+kind: Deployment
+metadata:
+  name: beschastnovsaiotcndhw2
+  labels:
+    app: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: backend
+          image: farank338/iot_cnd_hw2
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST_IP
+              value: database
+            - name: DB_HOST_PORT
+              value: "5432"
+            - name: USER_DB_NAME
+              value: username
+            - name: USER_DB_PASSWORD
+              value: password
+            - name: DB_NAME
+              value: default_database
+            - name: DB_TIMEZONE
+              value: Europe/Moscow
+        - name: database
+          image: postgres:latest
+          env:
+            - name: POSTGRES_USER
+              value: username
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_DB
+              value: default_database
