@@ -3,19 +3,19 @@ kind: Deployment
 metadata:
   name: backend-deployment
   labels:
-    app: backend-service
+    app: backend
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
-      app: backend-service
+      app: backend
   template:
     metadata:
       labels:
-        app: backend-service
+        app: backend
     spec:
       containers:
-      - name: backend-service
+      - name: backend
         image: farank338/iot_cnd_hw2:latest
         ports:
         - containerPort: 8080
@@ -23,7 +23,7 @@ spec:
         - name: DB_HOST_IP
           value: "database-service"
         - name: DB_HOST_PORT
-          value: "53"
+          value: "5432"
         - name: USER_DB_NAME
           value: "username"
         - name: USER_DB_PASSWORD
@@ -32,3 +32,18 @@ spec:
           value: "default_database"
         - name: DB_TIMEZONE
           value: "Europe/Moscow"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: NodePort
+  selector:
+    app: backend
+  ports:
+    - name: backend
+      protocol: TCP
+      port: 8080
+      targetPort: 8080

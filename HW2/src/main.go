@@ -153,6 +153,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 /*
 
+docker build -t iot_cnd_hw2 .
 docker image tag iot_cnd_hw2:latest farank338/iot_cnd_hw2:latest
 docker image push farank338/iot_cnd_hw2:latest
 */
