@@ -9,7 +9,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-
+	"sync"
 	"strconv"
 
 	"gorm.io/driver/postgres"
@@ -68,9 +68,13 @@ func main() {
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
-		for i := 0; i < 5; i++ {
+		for i := 0; i < 1000; i++ {
 			time.Sleep(5 * time.Second)
 			DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+			if err == nil{
+				break
+			}
+			
 		}
 		log.Println(err)
 	}
@@ -79,15 +83,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	mu=sync.Mutex{}
 	http.HandleFunc("/number", handler)
 
 	fmt.Println("Server started")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
+var mu sync.Mutex
 func handler(w http.ResponseWriter, r *http.Request) {
-
+	mu.Lock()
+	defer mu.Unlock()
 	n := Number{}
 	err := json.NewDecoder(r.Body).Decode(&n)
 	if err != nil {
@@ -143,3 +149,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&resp)
 
 }
+
+
+/*
+
+docker image tag iot_cnd_hw2:latest farank338/iot_cnd_hw2:latest
+docker image push farank338/iot_cnd_hw2:latest
+*/
