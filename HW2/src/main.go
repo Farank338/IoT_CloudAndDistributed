@@ -84,7 +84,7 @@ func main() {
 		log.Fatal(err)
 	}
 	mu=sync.Mutex{}
-	http.HandleFunc("/number", handler)
+	http.HandleFunc("/api/v1/number", handler)
 
 	fmt.Println("Server started")
 	log.Fatal(http.ListenAndServe(":8080", nil))
@@ -112,7 +112,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	if len(res) == 2 {
 		resp.Code = 500
-		resp.Message = "Both entries of the number and the number less by one are already in the database"
+		resp.Message = "Both entries of the number=("+strconv.Itoa(res[0].Number)+") and the number more by one=("+strconv.Itoa(res[0].Number+1)+") are already in the database"
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
@@ -121,13 +121,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if res[0].Number == n.Number {
 
 			resp.Code = 500
-			resp.Message = "This number are already in the database"
+			resp.Message = "This number=("+strconv.Itoa(res[0].Number)+") are already in the database number"
 			w.WriteHeader(http.StatusInternalServerError)
 
 		} else {
 
 			resp.Code = 500
-			resp.Message = "Number less by one are already in the database"
+			resp.Message = "Number more by one=("+strconv.Itoa(res[0].Number+1)+") than this number=("+strconv.Itoa(res[0].Number)+") are already in the database"
 			w.WriteHeader(http.StatusInternalServerError)
 
 		}
@@ -137,7 +137,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		db = DB.Create(&n)
 		if db.Error != nil {
-			panic(err)
+			resp.Code = 500
+			resp.Message = "This number=("+strconv.Itoa(n.Number)+") are already in the database number"
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		niceResp := make(map[string]interface{})
 		niceResp["number"] = n.Number + 1
